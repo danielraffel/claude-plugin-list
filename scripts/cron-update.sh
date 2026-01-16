@@ -6,8 +6,52 @@ LOG_DIR="$REPO_DIR/logs"
 LOG_FILE="$LOG_DIR/update.log"
 TAIL_LOG="$LOG_DIR/update.tail.log"
 STATUS_FILE="$LOG_DIR/run-status.json"
+MAX_LOG_BYTES=$((5 * 1024 * 1024))
+MAX_LOG_BACKUPS=5
 
 mkdir -p "$LOG_DIR"
+
+file_size() {
+  if [ ! -f "$1" ]; then
+    echo 0
+    return
+  fi
+
+  if command -v stat >/dev/null 2>&1; then
+    if stat -c%s "$1" >/dev/null 2>&1; then
+      stat -c%s "$1"
+      return
+    fi
+    if stat -f%z "$1" >/dev/null 2>&1; then
+      stat -f%z "$1"
+      return
+    fi
+  fi
+
+  wc -c < "$1" | tr -d " "
+}
+
+rotate_logs() {
+  local size
+  size="$(file_size "$LOG_FILE")"
+  if [ "$size" -lt "$MAX_LOG_BYTES" ]; then
+    return
+  fi
+
+  for ((i=MAX_LOG_BACKUPS; i>=1; i--)); do
+    if [ -f "${LOG_FILE}.${i}" ]; then
+      if [ "$i" -eq "$MAX_LOG_BACKUPS" ]; then
+        rm -f "${LOG_FILE}.${i}"
+      else
+        mv "${LOG_FILE}.${i}" "${LOG_FILE}.$((i + 1))"
+      fi
+    fi
+  done
+
+  mv "$LOG_FILE" "${LOG_FILE}.1"
+}
+
+rotate_logs
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 
