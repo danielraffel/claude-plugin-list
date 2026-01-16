@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd /opt/claude-plugin-list
+REPO_DIR="/opt/claude-plugin-list"
+LOG_DIR="$REPO_DIR/logs"
+LOG_FILE="$LOG_DIR/update.log"
+TAIL_LOG="$LOG_DIR/update.tail.log"
+STATUS_FILE="$LOG_DIR/run-status.json"
+
+mkdir -p "$LOG_DIR"
+
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+start_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+start_epoch=$(date -u +%s)
+
+cd "$REPO_DIR"
 
 # Load .env for GITHUB_TOKEN
 set -a
-source /opt/claude-plugin-list/.env
+source "$REPO_DIR/.env"
 set +a
 
 export PATH="${BUN_INSTALL:-$HOME/.bun}/bin:$PATH"
@@ -16,14 +29,67 @@ if [ -n "$remote_name" ]; then
 else
   echo "No git remote configured; skipping pull."
 fi
-bun run update
 
-git add lib/data/*.json
-if ! git diff --cached --quiet; then
-  git commit -m "chore: daily plugin sync $(date -u +%F)"
-  if [ -n "$remote_name" ]; then
-    git push
-  else
-    echo "No git remote configured; skipping push."
-  fi
+status="success"
+error_message=""
+if ! bun run update; then
+  status="failure"
+  error_message="bun run update failed"
 fi
+
+git_pushed="false"
+git_commit=""
+
+if [ "$status" = "success" ]; then
+  git add lib/data/*.json
+  if ! git diff --cached --quiet; then
+    git commit -m "chore: daily plugin sync $(date -u +%F)"
+    git_commit="$(git rev-parse HEAD)"
+    if [ -n "$remote_name" ]; then
+      if git push; then
+        git_pushed="true"
+      else
+        status="failure"
+        error_message="git push failed"
+      fi
+    else
+      echo "No git remote configured; skipping push."
+    fi
+  fi
+else
+  echo "Update failed; skipping git commit/push."
+fi
+
+end_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+end_epoch=$(date -u +%s)
+duration=$((end_epoch - start_epoch))
+
+export STATUS_FILE
+export END_TS="$end_ts"
+export STATUS="$status"
+export DURATION="$duration"
+export GIT_PUSHED="$git_pushed"
+export GIT_COMMIT="$git_commit"
+export ERROR_MESSAGE="$error_message"
+
+python3 - <<'PY'
+import json
+import os
+
+data = {
+    "lastRun": os.environ["END_TS"],
+    "status": os.environ["STATUS"],
+    "durationSeconds": int(os.environ["DURATION"]),
+    "gitPushed": os.environ["GIT_PUSHED"].lower() == "true",
+    "gitCommit": os.environ.get("GIT_COMMIT") or None,
+    "error": os.environ.get("ERROR_MESSAGE") or None,
+    "logUrl": "/logs/update.log",
+    "logTailUrl": "/logs/update.tail.log",
+}
+
+with open(os.environ["STATUS_FILE"], "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+
+tail -n 400 "$LOG_FILE" > "$TAIL_LOG" || true
