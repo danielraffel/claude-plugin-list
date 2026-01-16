@@ -8,6 +8,8 @@ set -a
 source /opt/claude-plugin-list/.env
 set +a
 
+export PATH="${BUN_INSTALL:-$HOME/.bun}/bin:$PATH"
+
 git pull --rebase --autostash
 bun run update
 
