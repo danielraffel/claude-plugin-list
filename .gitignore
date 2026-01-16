@@ -1,0 +1,7 @@
+.env
+.env.local
+node_modules/
+.bun
+bun.lockb
+.DS_Store
+lib/data/search-state.json

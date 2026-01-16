@@ -1,0 +1,19 @@
+{
+  "name": "claude-plugin-list",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "search": "bun run scripts/search.ts",
+    "update": "bun run scripts/update.ts",
+    "update:skip-search": "bun run scripts/update.ts --skip-search"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}

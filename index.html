@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Claude Plugin List</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f6f2;
+        --panel: #ffffff;
+        --text: #1e1d1a;
+        --muted: #6a655f;
+        --border: #e2ddd7;
+        --accent: #2e6f5e;
+        --chip: #efeae4;
+        --chip-active: #2e6f5e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 24px 24px 8px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 24px;
+        letter-spacing: 0.02em;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .meta {
+        margin-top: 6px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .meta a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .meta a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        padding: 16px 24px 32px;
+        display: grid;
+        gap: 16px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .controls {
+        display: grid;
+        gap: 12px;
+      }
+      .controls-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .controls input[type="text"] {
+        flex: 1 1 240px;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      .controls select {
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+      }
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chip {
+        border: 1px solid var(--border);
+        background: var(--chip);
+        color: var(--text);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .chip.active {
+        background: var(--chip-active);
+        border-color: var(--chip-active);
+        color: white;
+      }
+      .results {
+        display: grid;
+        gap: 12px;
+      }
+      .result {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: #fff;
+        display: grid;
+        gap: 6px;
+      }
+      .result-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .result-title {
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .result-title a {
+        color: var(--text);
+        text-decoration: none;
+      }
+      .result-title a:hover {
+        text-decoration: underline;
+      }
+      .result-meta {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .result-desc {
+        font-size: 14px;
+        color: #2f2b27;
+      }
+      .result-footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .badge {
+        background: #f3efe9;
+        border-radius: 6px;
+        padding: 2px 6px;
+        font-size: 11px;
+      }
+      .status {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .load-panel {
+        display: none;
+        margin-top: 12px;
+        padding: 12px;
+        border: 1px dashed var(--border);
+        border-radius: 10px;
+        background: #fbfaf7;
+      }
+      .load-panel input[type="file"] {
+        font-size: 13px;
+      }
+      @media (max-width: 700px) {
+        header,
+        .container {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Claude Plugin List</h1>
+      <div class="subtitle">Indexed plugins from Claude Code marketplaces</div>
+      <div class="meta">
+        <span>Last updated: <span id="lastUpdated">-</span></span>
+        <span aria-hidden="true">|</span>
+        <a href="stats.html">Stats</a>
+      </div>
+    </header>
+
+    <div class="container">
+      <section class="panel controls">
+        <div class="controls-row">
+          <input id="searchInput" type="text" placeholder="Search name, description, repo, tags..." />
+          <select id="sortSelect">
+            <option value="stars-desc">Stars (desc)</option>
+            <option value="stars-asc">Stars (asc)</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="marketplace-asc">Marketplace (A-Z)</option>
+            <option value="marketplace-desc">Marketplace (Z-A)</option>
+          </select>
+        </div>
+        <div class="stats" id="stats"></div>
+        <div class="status" id="status">Loading data...</div>
+        <div class="load-panel" id="loadPanel">
+          <div class="status">
+            Auto-load failed. Choose the local file:
+            <code>lib/data/plugins-with-metadata.json</code>
+          </div>
+          <input id="fileInput" type="file" accept="application/json" />
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="categories" id="categoryList"></div>
+      </section>
+
+      <section class="results" id="results"></section>
+    </div>
+
+    <script>
+      const dataPath = "lib/data/plugins-with-metadata.json";
+      const metadataPath = "lib/data/metadata.json";
+      const searchInput = document.getElementById("searchInput");
+      const sortSelect = document.getElementById("sortSelect");
+      const resultsEl = document.getElementById("results");
+      const statsEl = document.getElementById("stats");
+      const statusEl = document.getElementById("status");
+      const lastUpdatedEl = document.getElementById("lastUpdated");
+      const categoryListEl = document.getElementById("categoryList");
+      const loadPanelEl = document.getElementById("loadPanel");
+      const fileInputEl = document.getElementById("fileInput");
+
+      let dataset = [];
+      let activeCategory = "all";
+      let searchTerm = "";
+      let sortMode = "stars-desc";
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function normalizeCategory(value) {
+        const raw = value === null || value === undefined ? "" : String(value).trim();
+        return raw ? raw.toLowerCase() : "uncategorized";
+      }
+
+      function getStarValue(plugin) {
+        const repoStars = plugin.pluginRepoStars;
+        const marketplaceStars = plugin.marketplaceStars;
+        const value = repoStars ?? marketplaceStars ?? 0;
+        return typeof value === "number" && Number.isFinite(value) ? value : 0;
+      }
+
+      function buildSearchText(plugin) {
+        const fields = [
+          plugin.name,
+          plugin.description,
+          plugin.marketplace,
+          plugin.marketplaceRepo,
+          plugin.marketplaceUrl,
+          plugin.pluginRepo,
+          plugin.pluginRepoUrl,
+          plugin.installCommand,
+          plugin.category,
+          plugin.repository,
+          plugin.homepage,
+        ];
+        if (Array.isArray(plugin.tags)) fields.push(plugin.tags.join(" "));
+        if (Array.isArray(plugin.keywords)) fields.push(plugin.keywords.join(" "));
+        return fields.filter(Boolean).join(" ").toLowerCase();
+      }
+
+      function initData(raw) {
+        dataset = raw.map((plugin) => ({
+          plugin,
+          category: normalizeCategory(plugin.category),
+          stars: getStarValue(plugin),
+          searchText: buildSearchText(plugin),
+        }));
+
+        renderCategories();
+        render();
+        statusEl.textContent = `Loaded ${dataset.length} plugins.`;
+      }
+
+      function renderCategories() {
+        const counts = new Map();
+        dataset.forEach((item) => {
+          counts.set(item.category, (counts.get(item.category) || 0) + 1);
+        });
+        const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+
+        const allCount = dataset.length;
+        const chips = [`<button class="chip ${activeCategory === "all" ? "active" : ""}" data-category="all">All (${allCount})</button>`];
+        for (const [category, count] of sorted) {
+          const label = `${category} (${count})`;
+          const active = activeCategory === category ? "active" : "";
+          chips.push(`<button class="chip ${active}" data-category="${escapeHtml(category)}">${escapeHtml(label)}</button>`);
+        }
+        categoryListEl.innerHTML = chips.join("");
+
+        categoryListEl.querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeCategory = button.getAttribute("data-category");
+            renderCategories();
+            render();
+          });
+        });
+      }
+
+      function getFilteredItems() {
+        let items = dataset;
+        if (activeCategory !== "all") {
+          items = items.filter((item) => item.category === activeCategory);
+        }
+        if (searchTerm) {
+          items = items.filter((item) => item.searchText.includes(searchTerm));
+        }
+        const sorted = [...items];
+        sorted.sort((a, b) => {
+          if (sortMode === "stars-asc") return a.stars - b.stars || a.plugin.name.localeCompare(b.plugin.name);
+          if (sortMode === "stars-desc") return b.stars - a.stars || a.plugin.name.localeCompare(b.plugin.name);
+          if (sortMode === "name-desc") return b.plugin.name.localeCompare(a.plugin.name);
+          if (sortMode === "marketplace-asc") return String(a.plugin.marketplace).localeCompare(String(b.plugin.marketplace));
+          if (sortMode === "marketplace-desc") return String(b.plugin.marketplace).localeCompare(String(a.plugin.marketplace));
+          return a.plugin.name.localeCompare(b.plugin.name);
+        });
+        return sorted;
+      }
+
+      function render() {
+        const filtered = getFilteredItems();
+        const marketplaceSet = new Set(filtered.map((item) => item.plugin.marketplace));
+        const totalMarketplaceSet = new Set(dataset.map((item) => item.plugin.marketplace));
+        statsEl.textContent = `Total plugins: ${dataset.length} | Visible: ${filtered.length} | Marketplaces: ${marketplaceSet.size} (of ${totalMarketplaceSet.size})`;
+
+        resultsEl.innerHTML = filtered
+          .map((item) => {
+            const plugin = item.plugin;
+            const repoUrl = plugin.pluginRepoUrl || plugin.marketplaceUrl || plugin.repository || plugin.homepage || "";
+            const repoLabel = plugin.pluginRepo || plugin.marketplaceRepo || repoUrl;
+            const stars = item.stars ? `Stars: ${item.stars}` : "Stars: n/a";
+            const tags = Array.isArray(plugin.tags) ? plugin.tags.slice(0, 4) : [];
+            const keywords = Array.isArray(plugin.keywords) ? plugin.keywords.slice(0, 4) : [];
+            const badgeList = [
+              `<span class="badge">${escapeHtml(item.category)}</span>`,
+              ...tags.map((tag) => `<span class="badge">#${escapeHtml(tag)}</span>`),
+              ...keywords.map((kw) => `<span class="badge">${escapeHtml(kw)}</span>`),
+            ];
+
+            return `
+              <div class="result">
+                <div class="result-header">
+                  <div>
+                    <div class="result-title">
+                      ${repoUrl ? `<a href="${escapeHtml(repoUrl)}" target="_blank" rel="noopener">${escapeHtml(plugin.name)}</a>` : escapeHtml(plugin.name)}
+                    </div>
+                    <div class="result-meta">${escapeHtml(plugin.marketplace || "unknown marketplace")}</div>
+                  </div>
+                  <div class="result-meta">${stars}</div>
+                </div>
+                <div class="result-desc">${escapeHtml(plugin.description || "")}</div>
+                <div class="result-footer">
+                  ${badgeList.join("")}
+                  ${plugin.installCommand ? `<span>Install: <code>${escapeHtml(plugin.installCommand)}</code></span>` : ""}
+                  ${repoLabel ? `<span>Repo: ${escapeHtml(repoLabel)}</span>` : ""}
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      async function loadData() {
+        try {
+          const res = await fetch(dataPath);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          initData(data);
+        } catch (error) {
+          statusEl.textContent = "Could not auto-load JSON. Use the file picker.";
+          loadPanelEl.style.display = "block";
+        }
+      }
+
+      async function loadMetadata() {
+        if (!lastUpdatedEl) return;
+        try {
+          const res = await fetch(metadataPath);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const metadata = await res.json();
+          const updated = metadata.lastUpdated ? new Date(metadata.lastUpdated) : null;
+          lastUpdatedEl.textContent = updated ? updated.toLocaleString() : "unknown";
+        } catch (error) {
+          lastUpdatedEl.textContent = "unknown";
+        }
+      }
+
+      searchInput.addEventListener("input", (event) => {
+        searchTerm = event.target.value.trim().toLowerCase();
+        render();
+      });
+
+      sortSelect.addEventListener("change", (event) => {
+        sortMode = event.target.value;
+        render();
+      });
+
+      fileInputEl.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const data = JSON.parse(text);
+          loadPanelEl.style.display = "none";
+          initData(data);
+        } catch (error) {
+          statusEl.textContent = "Failed to parse JSON file.";
+        }
+      });
+
+      loadData();
+      loadMetadata();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Claude Plugin List Stats</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f6f2;
+        --panel: #ffffff;
+        --text: #1e1d1a;
+        --muted: #6a655f;
+        --border: #e2ddd7;
+        --accent: #2e6f5e;
+        --accent-2: #a66a2c;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 24px 24px 8px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 24px;
+        letter-spacing: 0.02em;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .meta {
+        margin-top: 6px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .meta a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .meta a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        padding: 16px 24px 32px;
+        display: grid;
+        gap: 16px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+      }
+      .stat-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        background: #fbfaf7;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .stat-value {
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .chart-wrap {
+        display: grid;
+        gap: 12px;
+      }
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend i {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        display: inline-block;
+      }
+      .chart {
+        width: 100%;
+        height: auto;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      thead th {
+        text-align: left;
+        padding: 8px 6px;
+        color: var(--muted);
+        font-weight: 600;
+        border-bottom: 1px solid var(--border);
+      }
+      tbody td {
+        padding: 8px 6px;
+        border-bottom: 1px solid var(--border);
+      }
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      .empty {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      @media (max-width: 700px) {
+        header,
+        .container {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Claude Plugin List Stats</h1>
+      <div class="subtitle">Daily counts for plugins and marketplaces</div>
+      <div class="meta">
+        <span>Last updated: <span id="lastUpdated">-</span></span>
+        <span aria-hidden="true">|</span>
+        <a href="index.html">Back to list</a>
+      </div>
+    </header>
+
+    <div class="container">
+      <section class="panel">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Plugins</div>
+            <div class="stat-value" id="pluginCount">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Marketplaces</div>
+            <div class="stat-value" id="marketplaceCount">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Net new plugins (today)</div>
+            <div class="stat-value" id="newPlugins">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Net new marketplaces (today)</div>
+            <div class="stat-value" id="newMarketplaces">-</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="chart-wrap">
+          <svg id="chart" class="chart" viewBox="0 0 800 260" role="img" aria-label="Plugins and marketplaces over time"></svg>
+          <div class="legend">
+            <span><i style="background: var(--accent);"></i> Plugins</span>
+            <span><i style="background: var(--accent-2);"></i> Marketplaces</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Date (UTC)</th>
+              <th>Plugins</th>
+              <th>Marketplaces</th>
+              <th>Net new plugins</th>
+              <th>Net new marketplaces</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable"></tbody>
+        </table>
+        <div class="empty" id="emptyState" hidden>No history yet.</div>
+      </section>
+    </div>
+
+    <script>
+      const metadataPath = "lib/data/metadata.json";
+      const statsPath = "lib/data/stats-history.json";
+      const lastUpdatedEl = document.getElementById("lastUpdated");
+      const pluginCountEl = document.getElementById("pluginCount");
+      const marketplaceCountEl = document.getElementById("marketplaceCount");
+      const newPluginsEl = document.getElementById("newPlugins");
+      const newMarketplacesEl = document.getElementById("newMarketplaces");
+      const tableBody = document.getElementById("historyTable");
+      const emptyState = document.getElementById("emptyState");
+      const chartEl = document.getElementById("chart");
+
+      function formatNumber(value) {
+        if (value === null || value === undefined) return "-";
+        return Number(value).toLocaleString();
+      }
+
+      function clearChart() {
+        while (chartEl.firstChild) {
+          chartEl.removeChild(chartEl.firstChild);
+        }
+      }
+
+      function drawChart(entries) {
+        clearChart();
+        if (!entries.length) return;
+
+        const width = 800;
+        const height = 260;
+        const padding = 36;
+        const pluginValues = entries.map((entry) => entry.pluginCount || 0);
+        const marketplaceValues = entries.map((entry) => entry.marketplaceCount || 0);
+        const maxValue = Math.max(...pluginValues, ...marketplaceValues, 1);
+
+        const scaleX = (index) =>
+          padding + (index / Math.max(entries.length - 1, 1)) * (width - padding * 2);
+        const scaleY = (value) =>
+          height - padding - (value / maxValue) * (height - padding * 2);
+
+        const gridLines = 4;
+        for (let i = 0; i <= gridLines; i++) {
+          const y = padding + (i / gridLines) * (height - padding * 2);
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", String(padding));
+          line.setAttribute("x2", String(width - padding));
+          line.setAttribute("y1", String(y));
+          line.setAttribute("y2", String(y));
+          line.setAttribute("stroke", "#efeae4");
+          line.setAttribute("stroke-width", "1");
+          chartEl.appendChild(line);
+        }
+
+        const buildPolyline = (values, stroke) => {
+          const points = values
+            .map((value, index) => `${scaleX(index)},${scaleY(value)}`)
+            .join(" ");
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+          line.setAttribute("points", points);
+          line.setAttribute("fill", "none");
+          line.setAttribute("stroke", stroke);
+          line.setAttribute("stroke-width", "2.5");
+          line.setAttribute("stroke-linecap", "round");
+          line.setAttribute("stroke-linejoin", "round");
+          chartEl.appendChild(line);
+        };
+
+        buildPolyline(pluginValues, "#2e6f5e");
+        buildPolyline(marketplaceValues, "#a66a2c");
+      }
+
+      function renderTable(entries) {
+        tableBody.innerHTML = "";
+        if (!entries.length) {
+          emptyState.hidden = false;
+          return;
+        }
+        emptyState.hidden = true;
+        const rows = entries
+          .slice()
+          .reverse()
+          .map((entry) => {
+            return `
+              <tr>
+                <td>${entry.date}</td>
+                <td>${formatNumber(entry.pluginCount)}</td>
+                <td>${formatNumber(entry.marketplaceCount)}</td>
+                <td>${formatNumber(entry.newPlugins)}</td>
+                <td>${formatNumber(entry.newMarketplaces)}</td>
+              </tr>
+            `;
+          })
+          .join("");
+        tableBody.innerHTML = rows;
+      }
+
+      async function loadMetadata() {
+        if (!lastUpdatedEl) return;
+        try {
+          const res = await fetch(metadataPath);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const metadata = await res.json();
+          const updated = metadata.lastUpdated ? new Date(metadata.lastUpdated) : null;
+          lastUpdatedEl.textContent = updated ? updated.toLocaleString() : "unknown";
+        } catch (error) {
+          lastUpdatedEl.textContent = "unknown";
+        }
+      }
+
+      async function loadStats() {
+        try {
+          const res = await fetch(statsPath);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const entries = await res.json();
+          const latest = entries[entries.length - 1];
+          if (latest) {
+            pluginCountEl.textContent = formatNumber(latest.pluginCount);
+            marketplaceCountEl.textContent = formatNumber(latest.marketplaceCount);
+            newPluginsEl.textContent = formatNumber(latest.newPlugins);
+            newMarketplacesEl.textContent = formatNumber(latest.newMarketplaces);
+          }
+          drawChart(entries);
+          renderTable(entries);
+        } catch (error) {
+          emptyState.hidden = false;
+        }
+      }
+
+      loadMetadata();
+      loadStats();
+    </script>
+  </body>
+</html>
