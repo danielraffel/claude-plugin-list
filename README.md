@@ -2,6 +2,10 @@
 
 Static viewer + daily stats for Claude Code plugins. The site loads `index.html` by default and reads its data from `lib/data/plugins-with-metadata.json`.
 
+## Why this exists
+
+We wanted a simple, public JSON source of active Claude Code plugins with rich metadata (stars, repos, marketplaces, etc.), plus a lightweight UI to browse them. This repo publishes that JSON daily and keeps a small history for tracking growth over time.
+
 ## Quick start
 
 - Open `index.html` in a browser.
