@@ -130,7 +130,9 @@ CRON_TZ=America/Los_Angeles
 
 ## Acknowledgements
 
-Search logic adapted from the claudemarketplaces.com project.
+Search logic adapted from the claudemarketplaces.com project:
+- http://claudemarketplaces.com
+- https://github.com/mertbuilds/claudemarketplaces.com
 
 ## License
 
