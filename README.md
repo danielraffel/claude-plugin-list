@@ -130,6 +130,9 @@ Search logic adapted from the claudemarketplaces.com project:
 - http://claudemarketplaces.com
 - https://github.com/mertbuilds/claudemarketplaces.com
 
+We built this to publish a daily JSON snapshot of active plugins with metadata. If you are just browsing, we recommend using claudemarketplaces.com. The JSON feed we wanted is here:
+https://raw.githubusercontent.com/danielraffel/claude-plugin-list/refs/heads/main/lib/data/plugins-with-metadata.json
+
 ## License
 
 MIT
