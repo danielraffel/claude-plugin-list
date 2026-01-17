@@ -55,6 +55,14 @@ rotate_logs
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 
+if [ "${FORCE_RUN:-false}" != "true" ]; then
+  la_hour="$(TZ=America/Los_Angeles date +%H)"
+  if [ "$la_hour" != "02" ]; then
+    echo "Skipping run: America/Los_Angeles hour is $la_hour (set FORCE_RUN=true to override)."
+    exit 0
+  fi
+fi
+
 start_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 start_epoch=$(date -u +%s)
 
@@ -85,7 +93,7 @@ git_pushed="false"
 git_commit=""
 
 if [ "$status" = "success" ]; then
-  git add lib/data/*.json
+  git add lib/data/marketplaces.json lib/data/plugins.json lib/data/plugins-with-metadata.json lib/data/metadata.json lib/data/stats-history.json
   if ! git diff --cached --quiet; then
     git commit -m "chore: daily plugin sync $(date -u +%F)"
     git_commit="$(git rev-parse HEAD)"
