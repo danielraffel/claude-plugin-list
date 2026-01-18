@@ -26,10 +26,12 @@ import {
   aggregatePluginKeywords,
 } from "../lib/search/plugin-extractor";
 import { RetryOptions } from "../lib/search/github-client";
+import type { Marketplace, Plugin } from "../lib/types";
 
 const SEARCH_QUERY = "filename:marketplace.json path:.claude-plugin";
 const STATE_VERSION = 1;
 const DEFAULT_STATE_FILE = path.join(process.cwd(), "lib/data/search-state.json");
+const MANUAL_REPOS_FILE = path.join(process.cwd(), "lib/data/manual-marketplaces.json");
 const PLUGINS_WITH_METADATA_FILE = path.join(
   process.cwd(),
   "lib/data/plugins-with-metadata.json"
@@ -249,6 +251,137 @@ function logInfo(message: string) {
   log(`  ${message}`, colors.gray);
 }
 
+const REPO_SOURCE_RANK: Record<string, number> = {
+  "plugin.repository": 4,
+  "plugin.sourceRepo": 3,
+  "plugin.homepage": 2,
+  marketplace: 1,
+  unknown: 0,
+};
+
+function normalizeDedupeValue(value: string | null | undefined): string {
+  return value ? value.trim().toLowerCase() : "";
+}
+
+function buildPluginDedupeKey(
+  plugin: Plugin,
+  pluginRepoById: Map<string, { repo: string | null }>
+): string | null {
+  const name = normalizeDedupeValue(plugin.name);
+  const repo = normalizeDedupeValue(pluginRepoById.get(plugin.id)?.repo ?? "");
+  if (!name || !repo) {
+    return null;
+  }
+  return `${name}::${repo}`;
+}
+
+function getPluginCandidateMeta(
+  plugin: Plugin,
+  pluginRepoById: Map<string, { repo: string | null; source: string }>,
+  marketplaceBySlug: Map<string, Marketplace>
+): {
+  sameAsMarketplace: boolean;
+  sourceRank: number;
+  marketplaceStars: number;
+  marketplaceSlug: string;
+} {
+  const repoInfo = pluginRepoById.get(plugin.id);
+  const repo = repoInfo?.repo ?? null;
+  const source = repoInfo?.source ?? "unknown";
+  const marketplace = marketplaceBySlug.get(plugin.marketplace);
+  const marketplaceRepo = marketplace?.repo ?? null;
+  const sameAsMarketplace = repo !== null && marketplaceRepo === repo;
+  const marketplaceStars = marketplace?.stars ?? -1;
+  const marketplaceSlug = marketplace?.slug ?? plugin.marketplace ?? "";
+  return {
+    sameAsMarketplace,
+    sourceRank: REPO_SOURCE_RANK[source] ?? 0,
+    marketplaceStars,
+    marketplaceSlug,
+  };
+}
+
+function isPreferredPluginCandidate(
+  candidate: Plugin,
+  current: Plugin,
+  pluginRepoById: Map<string, { repo: string | null; source: string }>,
+  marketplaceBySlug: Map<string, Marketplace>
+): boolean {
+  const candidateMeta = getPluginCandidateMeta(candidate, pluginRepoById, marketplaceBySlug);
+  const currentMeta = getPluginCandidateMeta(current, pluginRepoById, marketplaceBySlug);
+
+  if (candidateMeta.sameAsMarketplace !== currentMeta.sameAsMarketplace) {
+    return candidateMeta.sameAsMarketplace;
+  }
+  if (candidateMeta.sourceRank !== currentMeta.sourceRank) {
+    return candidateMeta.sourceRank > currentMeta.sourceRank;
+  }
+  if (candidateMeta.marketplaceStars !== currentMeta.marketplaceStars) {
+    return candidateMeta.marketplaceStars > currentMeta.marketplaceStars;
+  }
+  const slugCompare = candidateMeta.marketplaceSlug.localeCompare(currentMeta.marketplaceSlug);
+  if (slugCompare !== 0) {
+    return slugCompare < 0;
+  }
+  return candidate.id.localeCompare(current.id) < 0;
+}
+
+function dedupePluginsByNameAndRepo(
+  plugins: Plugin[],
+  pluginRepoById: Map<string, { repo: string | null; source: string }>,
+  marketplaceBySlug: Map<string, Marketplace>
+): { plugins: Plugin[]; removed: number; groups: number } {
+  const bestByKey = new Map<string, Plugin>();
+  const duplicateKeys = new Set<string>();
+
+  for (const plugin of plugins) {
+    const key = buildPluginDedupeKey(plugin, pluginRepoById);
+    if (!key) {
+      continue;
+    }
+    const existing = bestByKey.get(key);
+    if (!existing) {
+      bestByKey.set(key, plugin);
+      continue;
+    }
+    duplicateKeys.add(key);
+    if (isPreferredPluginCandidate(plugin, existing, pluginRepoById, marketplaceBySlug)) {
+      bestByKey.set(key, plugin);
+    }
+  }
+
+  const keptIds = new Set<string>();
+  for (const [key, plugin] of bestByKey) {
+    if (key) {
+      keptIds.add(plugin.id);
+    }
+  }
+
+  const deduped: Plugin[] = [];
+  const seenKeys = new Set<string>();
+  for (const plugin of plugins) {
+    const key = buildPluginDedupeKey(plugin, pluginRepoById);
+    if (!key) {
+      deduped.push(plugin);
+      continue;
+    }
+    if (seenKeys.has(key)) {
+      continue;
+    }
+    if (keptIds.has(plugin.id)) {
+      deduped.push(plugin);
+      seenKeys.add(key);
+    }
+  }
+
+  const removed = plugins.length - deduped.length;
+  return {
+    plugins: deduped,
+    removed,
+    groups: duplicateKeys.size,
+  };
+}
+
 function createInitialState(): SearchState {
   const now = new Date().toISOString();
   return {
@@ -278,6 +411,26 @@ function createInitialState(): SearchState {
     files: {},
     pluginRepos: {},
   };
+}
+
+async function loadManualRepos(): Promise<string[]> {
+  try {
+    const content = await fs.readFile(MANUAL_REPOS_FILE, "utf-8");
+    const parsed = JSON.parse(content) as unknown;
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+    return parsed
+      .filter((value): value is string => typeof value === "string")
+      .map((value) => value.trim())
+      .filter((value) => /^[\w-]+\/[\w-]+$/.test(value));
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      logWarning(`Failed to read manual repo list: ${MANUAL_REPOS_FILE}`);
+    }
+    return [];
+  }
 }
 
 async function loadState(stateFile: string): Promise<SearchState | null> {
@@ -631,6 +784,26 @@ async function runSearch() {
     state.search.results = searchResults;
     state.search.complete = searchQueries.every((query) => state.search.queries?.[query]?.complete);
     await queueStateWrite(args.stateFile, state);
+
+    const manualRepos = await loadManualRepos();
+    if (manualRepos.length > 0) {
+      let addedManual = 0;
+      manualRepos.forEach((repo) => {
+        const key = `${repo}::.claude-plugin/marketplace.json`;
+        if (!seenResults.has(key)) {
+          seenResults.add(key);
+          searchResults.push({
+            repo,
+            path: ".claude-plugin/marketplace.json",
+            url: `https://github.com/${repo}/blob/HEAD/.claude-plugin/marketplace.json`,
+          });
+          addedManual += 1;
+        }
+      });
+      if (addedManual > 0) {
+        logInfo(`Added ${addedManual} manual marketplace repos`);
+      }
+    }
 
     logSuccess(`Found ${searchResults.length} potential marketplaces`);
 
@@ -992,6 +1165,21 @@ async function runSearch() {
       return;
     }
 
+    const dedupeResult = dedupePluginsByNameAndRepo(
+      allPlugins,
+      pluginRepoById,
+      marketplaceBySlug
+    );
+    const pluginsToSave = dedupeResult.plugins;
+
+    if (dedupeResult.removed > 0) {
+      logSuccess(
+        `Plugins - Deduped ${dedupeResult.removed} entries (${dedupeResult.groups} duplicate groups) by name+repo`
+      );
+    } else {
+      logInfo("Plugins - No name+repo duplicates detected");
+    }
+
     // Step 9: Save results
     if (args.dryRun) {
       logStep(9, "Skipping save (dry run mode)");
@@ -1010,12 +1198,12 @@ async function runSearch() {
       logSuccess(`Marketplaces - Total: ${mergeResult.total}`);
 
       // Save plugins
-      await writePlugins(allPlugins);
-      logSuccess(`Plugins - Saved: ${allPlugins.length} plugins`);
+      await writePlugins(pluginsToSave);
+      logSuccess(`Plugins - Saved: ${pluginsToSave.length} plugins`);
 
       // Save enriched plugins for integration use
       await writePluginsWithMetadata(
-        allPlugins,
+        pluginsToSave,
         marketplacesWithKeywords,
         pluginRepoMetadataMap,
         pluginRepoById
