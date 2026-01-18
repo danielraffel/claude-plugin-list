@@ -9,6 +9,8 @@ STATUS_FILE="$LOG_DIR/run-status.json"
 MAX_LOG_BYTES=$((5 * 1024 * 1024))
 MAX_LOG_BACKUPS=5
 
+export HOME="${HOME:-/root}"
+
 mkdir -p "$LOG_DIR"
 
 file_size() {
@@ -73,7 +75,7 @@ set -a
 source "$REPO_DIR/.env"
 set +a
 
-export PATH="${BUN_INSTALL:-$HOME/.bun}/bin:$PATH"
+export PATH="/usr/local/bin:/usr/bin:/bin:${BUN_INSTALL:-$HOME/.bun}/bin:${PATH:-}"
 
 remote_name="$(git remote | head -n 1 || true)"
 if [ -n "$remote_name" ]; then
@@ -111,6 +113,7 @@ if [ "$status" = "success" ]; then
     git_commit="$(git rev-parse HEAD)"
     if [ -n "$remote_name" ]; then
       if [ "$use_gh_auth" = "true" ]; then
+        echo "Using gh auth for git push."
         if GIT_TERMINAL_PROMPT=0 git push; then
           git_pushed="true"
         else
@@ -118,6 +121,7 @@ if [ "$status" = "success" ]; then
           error_message="git push failed"
         fi
       elif [ "$use_token_push" = "true" ]; then
+        echo "Using GITHUB_TOKEN for git push."
         if GIT_ASKPASS="$REPO_DIR/scripts/git-askpass.sh" GIT_TERMINAL_PROMPT=0 git push; then
           git_pushed="true"
         else
@@ -125,6 +129,7 @@ if [ "$status" = "success" ]; then
           error_message="git push failed"
         fi
       else
+        echo "Using default git auth for git push."
         if GIT_TERMINAL_PROMPT=0 git push; then
           git_pushed="true"
         else
