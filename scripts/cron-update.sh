@@ -114,7 +114,7 @@ if [ "$status" = "success" ]; then
     if [ -n "$remote_name" ]; then
       if [ "$use_gh_auth" = "true" ]; then
         echo "Using gh auth for git push."
-        if GIT_TERMINAL_PROMPT=0 git push; then
+        if env -u GITHUB_TOKEN GIT_TERMINAL_PROMPT=0 git push; then
           git_pushed="true"
         else
           status="failure"
