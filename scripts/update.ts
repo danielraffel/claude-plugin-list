@@ -119,7 +119,17 @@ async function updateMetadata(): Promise<void> {
 async function run(): Promise<void> {
   if (!skipSearch) {
     console.log("Running marketplace search...");
-    await runCommand("bun", ["run", "scripts/search.ts"]);
+    await runCommand("bun", [
+      "run",
+      "scripts/search.ts",
+      "--search-shards",
+      "--refresh-search",
+      "--refresh-files",
+      "--refresh-stars",
+      "--refresh-plugin-repos",
+      "--min-stars",
+      "0",
+    ]);
   } else {
     console.log("Skipping search (using existing data files).");
   }
