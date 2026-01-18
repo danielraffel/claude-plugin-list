@@ -59,6 +59,9 @@
       .subtitle {
         color: var(--muted);
         font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
       }
       .subtitle a {
         color: var(--accent);
@@ -66,6 +69,21 @@
       }
       .subtitle a:hover {
         text-decoration: underline;
+      }
+      .why {
+        margin: 0;
+      }
+      .why summary {
+        cursor: pointer;
+        color: var(--accent);
+        font-weight: 600;
+        list-style: none;
+      }
+      .why summary::-webkit-details-marker {
+        display: none;
+      }
+      .why p {
+        margin: 6px 0 0;
       }
       .meta {
         margin-top: 6px;
@@ -94,27 +112,6 @@
         border-radius: 12px;
         padding: 16px;
         min-width: 0;
-      }
-      .about {
-        display: grid;
-        gap: 8px;
-      }
-      .about-title {
-        font-size: 14px;
-        font-weight: 600;
-      }
-      .about p {
-        margin: 0;
-        font-size: 13px;
-        color: var(--muted);
-        line-height: 1.4;
-      }
-      .about a {
-        color: var(--accent);
-        text-decoration: none;
-      }
-      .about a:hover {
-        text-decoration: underline;
       }
       .controls {
         display: grid;
@@ -287,10 +284,30 @@
     <header>
       <h1>Claude Plugin List</h1>
       <div class="subtitle">
-        Indexed plugins from Claude Code marketplaces. Source:
-        <a href="https://github.com/danielraffel/claude-plugin-list" target="_blank" rel="noopener">claude-plugin-list</a>.
-        Inspired by
-        <a href="https://claudemarketplaces.com" target="_blank" rel="noopener">claudemarketplaces.com</a>.
+        <details class="why">
+          <summary>Why build this?</summary>
+          <p>
+            We wanted a daily JSON snapshot of active plugins with metadata. If you are just
+            browsing, we recommend
+            <a href="https://claudemarketplaces.com" target="_blank" rel="noopener">claudemarketplaces.com</a>.
+          </p>
+          <p>
+            The JSON data is available at
+            <a href="https://raw.githubusercontent.com/danielraffel/claude-plugin-list/refs/heads/main/lib/data/plugins-with-metadata.json" target="_blank" rel="noopener">
+              plugins-with-metadata.json
+            </a>
+            and might be integrated into the
+            <a href="https://www.generouscorp.com/generous-corp-marketplace/plugins/chainer/" target="_blank" rel="noopener">
+              Chainer plugin
+            </a>.
+          </p>
+        </details>
+        <div>
+          Source:
+          <a href="https://github.com/danielraffel/claude-plugin-list" target="_blank" rel="noopener">claude-plugin-list</a>.
+          Inspired by
+          <a href="https://claudemarketplaces.com" target="_blank" rel="noopener">claudemarketplaces.com</a>.
+        </div>
       </div>
       <div class="meta">
         <span>Last updated: <span id="lastUpdated">-</span></span>
@@ -300,24 +317,6 @@
     </header>
 
     <div class="container">
-      <section class="panel about">
-        <div class="about-title">Why build this?</div>
-        <p>
-          We wanted a daily JSON snapshot of active plugins with metadata. If you are just
-          browsing, we recommend
-          <a href="https://claudemarketplaces.com" target="_blank" rel="noopener">claudemarketplaces.com</a>.
-        </p>
-        <p>
-          The JSON data lives at
-          <a href="https://raw.githubusercontent.com/danielraffel/claude-plugin-list/refs/heads/main/lib/data/plugins-with-metadata.json" target="_blank" rel="noopener">
-            plugins-with-metadata.json
-          </a>
-          and we explore it in the
-          <a href="https://www.generouscorp.com/generous-corp-marketplace/plugins/chainer/" target="_blank" rel="noopener">
-            Chainer plugin
-          </a>.
-        </p>
-      </section>
       <section class="panel controls">
         <div class="controls-row">
           <input id="searchInput" type="text" placeholder="Search name, description, repo, tags..." />
