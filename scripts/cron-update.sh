@@ -92,8 +92,15 @@ fi
 git_pushed="false"
 git_commit=""
 
+use_gh_auth=false
+if command -v gh >/dev/null 2>&1; then
+  if gh auth status -h github.com >/dev/null 2>&1; then
+    use_gh_auth=true
+  fi
+fi
+
 use_token_push=false
-if [ -n "${GITHUB_TOKEN:-}" ]; then
+if [ "$use_gh_auth" = "false" ] && [ -n "${GITHUB_TOKEN:-}" ]; then
   use_token_push=true
 fi
 
@@ -103,7 +110,14 @@ if [ "$status" = "success" ]; then
     git commit -m "chore: daily plugin sync $(date -u +%F)"
     git_commit="$(git rev-parse HEAD)"
     if [ -n "$remote_name" ]; then
-      if [ "$use_token_push" = "true" ]; then
+      if [ "$use_gh_auth" = "true" ]; then
+        if GIT_TERMINAL_PROMPT=0 git push; then
+          git_pushed="true"
+        else
+          status="failure"
+          error_message="git push failed"
+        fi
+      elif [ "$use_token_push" = "true" ]; then
         if GIT_ASKPASS="$REPO_DIR/scripts/git-askpass.sh" GIT_TERMINAL_PROMPT=0 git push; then
           git_pushed="true"
         else
@@ -111,7 +125,7 @@ if [ "$status" = "success" ]; then
           error_message="git push failed"
         fi
       else
-        if git push; then
+        if GIT_TERMINAL_PROMPT=0 git push; then
           git_pushed="true"
         else
           status="failure"
