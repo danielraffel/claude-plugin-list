@@ -60,6 +60,13 @@
         color: var(--muted);
         font-size: 14px;
       }
+      .subtitle a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .subtitle a:hover {
+        text-decoration: underline;
+      }
       .meta {
         margin-top: 6px;
         display: flex;
@@ -86,6 +93,28 @@
         border: 1px solid var(--border);
         border-radius: 12px;
         padding: 16px;
+        min-width: 0;
+      }
+      .about {
+        display: grid;
+        gap: 8px;
+      }
+      .about-title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .about p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .about a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .about a:hover {
+        text-decoration: underline;
       }
       .controls {
         display: grid;
@@ -140,6 +169,7 @@
       .results {
         display: grid;
         gap: 12px;
+        min-width: 0;
       }
       .result {
         border: 1px solid var(--border);
@@ -154,6 +184,9 @@
         justify-content: space-between;
         gap: 12px;
         flex-wrap: wrap;
+      }
+      .result-header > * {
+        min-width: 0;
       }
       .result-title {
         font-weight: 600;
@@ -181,8 +214,23 @@
         font-size: 12px;
         color: var(--muted);
       }
+      .stats,
+      .result-title,
+      .result-title a,
+      .result-meta,
+      .result-desc,
+      .result-footer,
+      .result-footer span {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      .result-footer > span {
+        min-width: 0;
+      }
       .result-footer code {
         overflow-wrap: anywhere;
+        word-break: break-word;
+        white-space: normal;
       }
       .badge {
         background: #f3efe9;
@@ -208,8 +256,10 @@
       @media (max-width: 700px) {
         header,
         .container {
-          padding-left: max(16px, env(safe-area-inset-left));
-          padding-right: max(16px, env(safe-area-inset-right));
+          padding-left: 16px;
+          padding-right: 16px;
+          padding-left: calc(16px + env(safe-area-inset-left));
+          padding-right: calc(16px + env(safe-area-inset-right));
         }
         header {
           padding-top: calc(24px + env(safe-area-inset-top));
@@ -221,6 +271,11 @@
           flex-direction: column;
           align-items: stretch;
         }
+        .controls input[type="text"] {
+          height: 44px;
+          padding: 8px 12px;
+          line-height: 1.2;
+        }
         .controls input[type="text"],
         .controls select {
           width: 100%;
@@ -231,7 +286,12 @@
   <body>
     <header>
       <h1>Claude Plugin List</h1>
-      <div class="subtitle">Indexed plugins from Claude Code marketplaces</div>
+      <div class="subtitle">
+        Indexed plugins from Claude Code marketplaces. Source:
+        <a href="https://github.com/danielraffel/claude-plugin-list" target="_blank" rel="noopener">claude-plugin-list</a>.
+        Inspired by
+        <a href="https://claudemarketplaces.com" target="_blank" rel="noopener">claudemarketplaces.com</a>.
+      </div>
       <div class="meta">
         <span>Last updated: <span id="lastUpdated">-</span></span>
         <span aria-hidden="true">|</span>
@@ -240,6 +300,24 @@
     </header>
 
     <div class="container">
+      <section class="panel about">
+        <div class="about-title">Why build this?</div>
+        <p>
+          We wanted a daily JSON snapshot of active plugins with metadata. If you are just
+          browsing, we recommend
+          <a href="https://claudemarketplaces.com" target="_blank" rel="noopener">claudemarketplaces.com</a>.
+        </p>
+        <p>
+          The JSON data lives at
+          <a href="https://raw.githubusercontent.com/danielraffel/claude-plugin-list/refs/heads/main/lib/data/plugins-with-metadata.json" target="_blank" rel="noopener">
+            plugins-with-metadata.json
+          </a>
+          and we explore it in the
+          <a href="https://www.generouscorp.com/generous-corp-marketplace/plugins/chainer/" target="_blank" rel="noopener">
+            Chainer plugin
+          </a>.
+        </p>
+      </section>
       <section class="panel controls">
         <div class="controls-row">
           <input id="searchInput" type="text" placeholder="Search name, description, repo, tags..." />
