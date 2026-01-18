@@ -92,17 +92,31 @@ fi
 git_pushed="false"
 git_commit=""
 
+use_token_push=false
+if [ -n "${GITHUB_TOKEN:-}" ]; then
+  use_token_push=true
+fi
+
 if [ "$status" = "success" ]; then
   git add lib/data/marketplaces.json lib/data/plugins.json lib/data/plugins-with-metadata.json lib/data/metadata.json lib/data/stats-history.json
   if ! git diff --cached --quiet; then
     git commit -m "chore: daily plugin sync $(date -u +%F)"
     git_commit="$(git rev-parse HEAD)"
     if [ -n "$remote_name" ]; then
-      if git push; then
-        git_pushed="true"
+      if [ "$use_token_push" = "true" ]; then
+        if GIT_ASKPASS="$REPO_DIR/scripts/git-askpass.sh" GIT_TERMINAL_PROMPT=0 git push; then
+          git_pushed="true"
+        else
+          status="failure"
+          error_message="git push failed"
+        fi
       else
-        status="failure"
-        error_message="git push failed"
+        if git push; then
+          git_pushed="true"
+        else
+          status="failure"
+          error_message="git push failed"
+        fi
       fi
     else
       echo "No git remote configured; skipping push."
