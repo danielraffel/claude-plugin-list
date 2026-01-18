@@ -360,6 +360,7 @@
       let activeCategory = "all";
       let searchTerm = "";
       let sortMode = "stars-desc";
+      let metadataMarketplaceCount = null;
 
       function escapeHtml(value) {
         return String(value)
@@ -461,9 +462,10 @@
 
       function render() {
         const filtered = getFilteredItems();
-        const marketplaceSet = new Set(filtered.map((item) => item.plugin.marketplace));
-        const totalMarketplaceSet = new Set(dataset.map((item) => item.plugin.marketplace));
-        statsEl.textContent = `Total plugins: ${dataset.length} | Visible: ${filtered.length} | Marketplaces: ${marketplaceSet.size} (of ${totalMarketplaceSet.size})`;
+        const totalPlugins = dataset.length;
+        const marketplaceSet = new Set(dataset.map((item) => item.plugin.marketplace));
+        const totalMarketplaces = metadataMarketplaceCount ?? marketplaceSet.size;
+        statsEl.textContent = `Plugins: ${totalPlugins} | Marketplaces: ${totalMarketplaces}`;
 
         resultsEl.innerHTML = filtered
           .map((item) => {
@@ -522,6 +524,11 @@
           const metadata = await res.json();
           const updated = metadata.lastUpdated ? new Date(metadata.lastUpdated) : null;
           lastUpdatedEl.textContent = updated ? updated.toLocaleString() : "unknown";
+          metadataMarketplaceCount =
+            typeof metadata.marketplaceCount === "number" ? metadata.marketplaceCount : null;
+          if (dataset.length) {
+            render();
+          }
         } catch (error) {
           lastUpdatedEl.textContent = "unknown";
         }
