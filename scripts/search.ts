@@ -1189,7 +1189,15 @@ async function runSearch() {
 
       // Save marketplaces (with plugin keywords)
       const allDiscoveredRepos = new Set(resultsToProcess.map((r) => r.repo));
-      const mergeResult = await mergeMarketplaces(marketplacesWithKeywords, allDiscoveredRepos);
+      const removeUndiscovered = !args.limit && (args.refreshSearch || args.fresh || !args.resume);
+      if (removeUndiscovered) {
+        logInfo("Marketplaces - Removing entries missing from refreshed search results");
+      }
+      const mergeResult = await mergeMarketplaces(
+        marketplacesWithKeywords,
+        allDiscoveredRepos,
+        removeUndiscovered
+      );
 
       logSuccess(`Marketplaces - Added: ${mergeResult.added}, Updated: ${mergeResult.updated}`);
       if (mergeResult.removed > 0) {

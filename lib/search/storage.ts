@@ -51,7 +51,8 @@ export async function writeMarketplaces(marketplaces: Marketplace[]): Promise<vo
  */
 export async function mergeMarketplaces(
   discovered: Marketplace[],
-  allDiscoveredRepos: Set<string>
+  allDiscoveredRepos: Set<string>,
+  removeUndiscovered: boolean = false
 ): Promise<{
   added: number;
   updated: number;
@@ -60,6 +61,7 @@ export async function mergeMarketplaces(
 }> {
   const existing = await readMarketplaces();
   const existingMap = new Map(existing.map((m) => [m.repo, m]));
+  const discoveredRepos = new Set(discovered.map((marketplace) => marketplace.repo));
 
   let added = 0;
   let updated = 0;
@@ -90,9 +92,18 @@ export async function mergeMarketplaces(
     }
   }
 
+  if (removeUndiscovered) {
+    for (const [repo] of existingMap) {
+      if (!allDiscoveredRepos.has(repo)) {
+        existingMap.delete(repo);
+        removed++;
+      }
+    }
+  }
+
   // Remove marketplaces that were discovered but are now invalid
   for (const [repo] of existingMap) {
-    if (allDiscoveredRepos.has(repo) && !discovered.find((m) => m.repo === repo)) {
+    if (allDiscoveredRepos.has(repo) && !discoveredRepos.has(repo)) {
       existingMap.delete(repo);
       removed++;
     }
