@@ -4016,31 +4016,6 @@
     "installCommand": "/plugin install chrome-devtools-mcp@chromedevtools-chrome-devtools-mcp"
   },
   {
-    "id": "insforge-insforge/insforge",
-    "name": "insforge",
-    "description": "Official InsForge plugin with schema patterns, best practices for database design, RLS policies, and SDK usage examples. Includes patterns for social graphs, multi-tenancy, and complex relationships.",
-    "version": "1.0.0",
-    "author": {
-      "name": "InsForge Team"
-    },
-    "source": "./claude-plugin",
-    "sourcePath": "./claude-plugin",
-    "marketplace": "insforge-insforge",
-    "marketplaceUrl": "https://github.com/InsForge/InsForge",
-    "category": "database",
-    "tags": [
-      "insforge",
-      "postgresql",
-      "postgrest",
-      "database",
-      "baas",
-      "backend",
-      "rls",
-      "schema"
-    ],
-    "installCommand": "/plugin install insforge@insforge-insforge"
-  },
-  {
     "id": "composiohq-awesome-claude-skills/brand-guidelines",
     "name": "brand-guidelines",
     "description": "Applies Anthropic's official brand colors and typography to artifacts for consistent visual identity and professional design standards.",
@@ -4347,6 +4322,31 @@
     "marketplaceUrl": "https://github.com/ComposioHQ/awesome-claude-skills",
     "category": "productivity-organization",
     "installCommand": "/plugin install document-skills-xlsx@composiohq-awesome-claude-skills"
+  },
+  {
+    "id": "insforge-insforge/insforge",
+    "name": "insforge",
+    "description": "Official InsForge plugin with schema patterns, best practices for database design, RLS policies, and SDK usage examples. Includes patterns for social graphs, multi-tenancy, and complex relationships.",
+    "version": "1.0.0",
+    "author": {
+      "name": "InsForge Team"
+    },
+    "source": "./claude-plugin",
+    "sourcePath": "./claude-plugin",
+    "marketplace": "insforge-insforge",
+    "marketplaceUrl": "https://github.com/InsForge/InsForge",
+    "category": "database",
+    "tags": [
+      "insforge",
+      "postgresql",
+      "postgrest",
+      "database",
+      "baas",
+      "backend",
+      "rls",
+      "schema"
+    ],
+    "installCommand": "/plugin install insforge@insforge-insforge"
   },
   {
     "id": "speakeasy-api-speakeasy/speakeasy",
@@ -8572,6 +8572,32 @@
     "installCommand": "/plugin install claude-constructor@hurblat-claude-constructor"
   },
   {
+    "id": "zerobearing2-rails-ai/rails-ai",
+    "name": "rails-ai",
+    "description": "Rails development coordinator with domain skills for Rails 8+, Hotwire, security, and TDD. Built on Superpowers workflows.",
+    "version": "0.3.1",
+    "author": {
+      "name": "zerobearing2",
+      "url": "https://github.com/zerobearing2"
+    },
+    "source": "./",
+    "sourcePath": "./",
+    "marketplace": "zerobearing2-rails-ai",
+    "marketplaceUrl": "https://github.com/zerobearing2/rails-ai",
+    "category": "community",
+    "keywords": [
+      "rails",
+      "ruby",
+      "skills",
+      "tdd",
+      "testing",
+      "security",
+      "hotwire",
+      "superpowers"
+    ],
+    "installCommand": "/plugin install rails-ai@zerobearing2-rails-ai"
+  },
+  {
     "id": "justdvp-claude-code-templates/git-workflow",
     "name": "git-workflow",
     "description": "Git workflow automation: feature, release, and hotfix commands with git specialists",
@@ -8944,32 +8970,6 @@
       "./cli-tool/components/mcps/productivity/linear-integration.json"
     ],
     "installCommand": "/plugin install project-management-suite@justdvp-claude-code-templates"
-  },
-  {
-    "id": "zerobearing2-rails-ai/rails-ai",
-    "name": "rails-ai",
-    "description": "Rails development coordinator with domain skills for Rails 8+, Hotwire, security, and TDD. Built on Superpowers workflows.",
-    "version": "0.3.1",
-    "author": {
-      "name": "zerobearing2",
-      "url": "https://github.com/zerobearing2"
-    },
-    "source": "./",
-    "sourcePath": "./",
-    "marketplace": "zerobearing2-rails-ai",
-    "marketplaceUrl": "https://github.com/zerobearing2/rails-ai",
-    "category": "community",
-    "keywords": [
-      "rails",
-      "ruby",
-      "skills",
-      "tdd",
-      "testing",
-      "security",
-      "hotwire",
-      "superpowers"
-    ],
-    "installCommand": "/plugin install rails-ai@zerobearing2-rails-ai"
   },
   {
     "id": "nextlevelbuilder-ui-ux-pro-max-skill/ui-ux-pro-max",
@@ -14245,22 +14245,6 @@
     "installCommand": "/plugin install api-contract-sync-manager@ananddtyagi-cc-marketplace"
   },
   {
-    "id": "withzombies-hyperpowers/withzombies-hyper",
-    "name": "withzombies-hyper",
-    "description": "Ryan's riff on obra/superpowers: strong guidance for Claude Code as a software development assistant",
-    "version": "1.6.1",
-    "author": {
-      "name": "Ryan",
-      "email": "ryan@withzombies.com"
-    },
-    "source": "./",
-    "sourcePath": "./",
-    "marketplace": "withzombies-hyperpowers",
-    "marketplaceUrl": "https://github.com/withzombies/hyperpowers",
-    "category": "community",
-    "installCommand": "/plugin install withzombies-hyper@withzombies-hyperpowers"
-  },
-  {
     "id": "nickcrew-claude-cortex/claude-cortex",
     "name": "claude-cortex",
     "description": "Context orchestration toolkit with curated commands, agents, modes, and CLI utilities.",
@@ -14370,6 +14354,22 @@
       "./plugins/ux-product/agents"
     ],
     "installCommand": "/plugin install ux-product@nickcrew-claude-cortex"
+  },
+  {
+    "id": "withzombies-hyperpowers/withzombies-hyper",
+    "name": "withzombies-hyper",
+    "description": "Ryan's riff on obra/superpowers: strong guidance for Claude Code as a software development assistant",
+    "version": "1.6.1",
+    "author": {
+      "name": "Ryan",
+      "email": "ryan@withzombies.com"
+    },
+    "source": "./",
+    "sourcePath": "./",
+    "marketplace": "withzombies-hyperpowers",
+    "marketplaceUrl": "https://github.com/withzombies/hyperpowers",
+    "category": "community",
+    "installCommand": "/plugin install withzombies-hyper@withzombies-hyperpowers"
   },
   {
     "id": "tenequm-claude-plugins/gh-cli",
@@ -22781,28 +22781,6 @@
     "installCommand": "/plugin install cem@bennypowers-cem"
   },
   {
-    "id": "salesably-salesably-marketplace/marketing-skills",
-    "name": "marketing-skills",
-    "description": "10 specialized marketing skills: brand voice, positioning, content strategy, copywriting, and distribution.",
-    "source": "./marketing-skills",
-    "sourcePath": "./marketing-skills",
-    "marketplace": "salesably-salesably-marketplace",
-    "marketplaceUrl": "https://github.com/Salesably/salesably-marketplace",
-    "category": "marketing",
-    "installCommand": "/plugin install marketing-skills@salesably-salesably-marketplace"
-  },
-  {
-    "id": "salesably-salesably-marketplace/sales-skills",
-    "name": "sales-skills",
-    "description": "9 specialized sales skills: deal qualification, prospect research, call preparation, and stakeholder engagement.",
-    "source": "./sales-skills",
-    "sourcePath": "./sales-skills",
-    "marketplace": "salesably-salesably-marketplace",
-    "marketplaceUrl": "https://github.com/Salesably/salesably-marketplace",
-    "category": "sales",
-    "installCommand": "/plugin install sales-skills@salesably-salesably-marketplace"
-  },
-  {
     "id": "theodorosploumis-drupal-best-practices/drupal-blocks",
     "name": "drupal-blocks",
     "description": "Create reusable custom blocks and plugins with disciplined naming and configuration. Provides guidance on block type creation, field planning, view mode reuse, and caching expectations for Drupal blocks.",
@@ -22911,6 +22889,28 @@
     "marketplaceUrl": "https://github.com/theodorosploumis/drupal-best-practices",
     "category": "community",
     "installCommand": "/plugin install drupal-views@theodorosploumis-drupal-best-practices"
+  },
+  {
+    "id": "salesably-salesably-marketplace/marketing-skills",
+    "name": "marketing-skills",
+    "description": "10 specialized marketing skills: brand voice, positioning, content strategy, copywriting, and distribution.",
+    "source": "./marketing-skills",
+    "sourcePath": "./marketing-skills",
+    "marketplace": "salesably-salesably-marketplace",
+    "marketplaceUrl": "https://github.com/Salesably/salesably-marketplace",
+    "category": "marketing",
+    "installCommand": "/plugin install marketing-skills@salesably-salesably-marketplace"
+  },
+  {
+    "id": "salesably-salesably-marketplace/sales-skills",
+    "name": "sales-skills",
+    "description": "9 specialized sales skills: deal qualification, prospect research, call preparation, and stakeholder engagement.",
+    "source": "./sales-skills",
+    "sourcePath": "./sales-skills",
+    "marketplace": "salesably-salesably-marketplace",
+    "marketplaceUrl": "https://github.com/Salesably/salesably-marketplace",
+    "category": "sales",
+    "installCommand": "/plugin install sales-skills@salesably-salesably-marketplace"
   },
   {
     "id": "expo-skills/expo-app-design",
@@ -24276,6 +24276,18 @@
     "installCommand": "/plugin install git-helpers@adeonir-claude-code-extras"
   },
   {
+    "id": "levnikolaevich-claude-code-skills/full-development-workflow-skills",
+    "name": "full-development-workflow-skills",
+    "description": "Full development workflow skills: Bootstrap, Documentation, Planning, Execution, Quality, Audit. Requires Linear + Context7 + Ref MCP servers.",
+    "source": "./",
+    "sourcePath": "./",
+    "marketplace": "levnikolaevich-claude-code-skills",
+    "marketplaceUrl": "https://github.com/levnikolaevich/claude-code-skills",
+    "category": "community",
+    "strict": false,
+    "installCommand": "/plugin install full-development-workflow-skills@levnikolaevich-claude-code-skills"
+  },
+  {
     "id": "aws-solutions-library-samples-guidance-for-claude-code-with-amazon-bedrock/epcc-workflow",
     "name": "epcc-workflow",
     "description": "EPCC (Explore-Plan-Code-Commit) systematic development workflow with 12 specialized agents for exploration, planning, coding, and commit phases",
@@ -24444,18 +24456,6 @@
     "installCommand": "/plugin install code-analysis@aws-solutions-library-samples-guidance-for-claude-code-with-amazon-bedrock"
   },
   {
-    "id": "levnikolaevich-claude-code-skills/full-development-workflow-skills",
-    "name": "full-development-workflow-skills",
-    "description": "Full development workflow skills: Bootstrap, Documentation, Planning, Execution, Quality, Audit. Requires Linear + Context7 + Ref MCP servers.",
-    "source": "./",
-    "sourcePath": "./",
-    "marketplace": "levnikolaevich-claude-code-skills",
-    "marketplaceUrl": "https://github.com/levnikolaevich/claude-code-skills",
-    "category": "community",
-    "strict": false,
-    "installCommand": "/plugin install full-development-workflow-skills@levnikolaevich-claude-code-skills"
-  },
-  {
     "id": "yamadashy-repomix/repomix-mcp",
     "name": "repomix-mcp",
     "description": "",
@@ -24538,21 +24538,6 @@
     "marketplaceUrl": "https://github.com/kenryu42/claude-code-safety-net",
     "category": "community",
     "installCommand": "/plugin install safety-net@kenryu42-claude-code-safety-net"
-  },
-  {
-    "id": "clipboardhealth-core-utils/core",
-    "name": "core",
-    "description": "Clipboard's core development tools.",
-    "version": "1.0.0",
-    "author": {
-      "name": "Clipboard"
-    },
-    "source": "./plugins/core",
-    "sourcePath": "./plugins/core",
-    "marketplace": "clipboardhealth-core-utils",
-    "marketplaceUrl": "https://github.com/ClipboardHealth/core-utils",
-    "category": "community",
-    "installCommand": "/plugin install core@clipboardhealth-core-utils"
   },
   {
     "id": "neolabhq-context-engineering-kit/reflexion",
@@ -24763,6 +24748,21 @@
     "installCommand": "/plugin install fpf@neolabhq-context-engineering-kit"
   },
   {
+    "id": "clipboardhealth-core-utils/core",
+    "name": "core",
+    "description": "Clipboard's core development tools.",
+    "version": "1.0.0",
+    "author": {
+      "name": "Clipboard"
+    },
+    "source": "./plugins/core",
+    "sourcePath": "./plugins/core",
+    "marketplace": "clipboardhealth-core-utils",
+    "marketplaceUrl": "https://github.com/ClipboardHealth/core-utils",
+    "category": "community",
+    "installCommand": "/plugin install core@clipboardhealth-core-utils"
+  },
+  {
     "id": "croffasia-cc-blueprint-toolkit/bp",
     "name": "bp",
     "description": "Blueprint-driven Claude Code autopilot. Smart preparation over endless iterations - AI analyzes patterns, creates solid implementation plans, delivers working code in 15 minutes.",
@@ -24944,6 +24944,30 @@
     "marketplaceUrl": "https://github.com/sirsjg/flux",
     "category": "community",
     "installCommand": "/plugin install flux@sirsjg-flux"
+  },
+  {
+    "id": "actionbook-actionbook/actionbook",
+    "name": "actionbook",
+    "description": "Up-to-date action manuals for browser automation. Get verified CSS/XPath selectors for any website directly into your agent context.",
+    "version": "0.2.0",
+    "source": "./",
+    "sourcePath": "./",
+    "marketplace": "actionbook-actionbook",
+    "marketplaceUrl": "https://github.com/actionbook/actionbook",
+    "category": "community",
+    "installCommand": "/plugin install actionbook@actionbook-actionbook"
+  },
+  {
+    "id": "actionbook-actionbook/rust-learner",
+    "name": "rust-learner",
+    "description": "Learn Rust language features and crate updates using Actionbook + agent-browser.",
+    "version": "0.1.0",
+    "source": "./playground/rust-learner",
+    "sourcePath": "./playground/rust-learner",
+    "marketplace": "actionbook-actionbook",
+    "marketplaceUrl": "https://github.com/actionbook/actionbook",
+    "category": "community",
+    "installCommand": "/plugin install rust-learner@actionbook-actionbook"
   },
   {
     "id": "nasa-ammos-slim/slim-changelog",
@@ -25317,30 +25341,6 @@
     "installCommand": "/plugin install slim-website-maker@nasa-ammos-slim"
   },
   {
-    "id": "actionbook-actionbook/actionbook",
-    "name": "actionbook",
-    "description": "Up-to-date action manuals for browser automation. Get verified CSS/XPath selectors for any website directly into your agent context.",
-    "version": "0.2.0",
-    "source": "./",
-    "sourcePath": "./",
-    "marketplace": "actionbook-actionbook",
-    "marketplaceUrl": "https://github.com/actionbook/actionbook",
-    "category": "community",
-    "installCommand": "/plugin install actionbook@actionbook-actionbook"
-  },
-  {
-    "id": "actionbook-actionbook/rust-learner",
-    "name": "rust-learner",
-    "description": "Learn Rust language features and crate updates using Actionbook + agent-browser.",
-    "version": "0.1.0",
-    "source": "./playground/rust-learner",
-    "sourcePath": "./playground/rust-learner",
-    "marketplace": "actionbook-actionbook",
-    "marketplaceUrl": "https://github.com/actionbook/actionbook",
-    "category": "community",
-    "installCommand": "/plugin install rust-learner@actionbook-actionbook"
-  },
-  {
     "id": "yonatangross-skillforge-claude-plugin/skf",
     "name": "skf",
     "description": "Complete AI development toolkit with 97 skills covering AI/LLM, backend, frontend, security, and testing patterns. Includes 20 specialized agents and 105 lifecycle hooks.",
@@ -25513,17 +25513,6 @@
     "installCommand": "/plugin install pumped-design@pumped-fn-pumped-fn"
   },
   {
-    "id": "pokutuna-mcp-chrome-tabs/mcp-chrome-tabs",
-    "name": "mcp-chrome-tabs",
-    "description": "",
-    "source": "./",
-    "sourcePath": "./",
-    "marketplace": "pokutuna-mcp-chrome-tabs",
-    "marketplaceUrl": "https://github.com/pokutuna/mcp-chrome-tabs",
-    "category": "community",
-    "installCommand": "/plugin install mcp-chrome-tabs@pokutuna-mcp-chrome-tabs"
-  },
-  {
     "id": "cleydson-flutter-claude-code/flutter-all",
     "name": "flutter-all",
     "description": "Complete Flutter development suite with all agents and skills",
@@ -25610,6 +25599,17 @@
     "marketplaceUrl": "https://github.com/cleydson/flutter-claude-code",
     "category": "community",
     "installCommand": "/plugin install flutter-patterns@cleydson-flutter-claude-code"
+  },
+  {
+    "id": "pokutuna-mcp-chrome-tabs/mcp-chrome-tabs",
+    "name": "mcp-chrome-tabs",
+    "description": "",
+    "source": "./",
+    "sourcePath": "./",
+    "marketplace": "pokutuna-mcp-chrome-tabs",
+    "marketplaceUrl": "https://github.com/pokutuna/mcp-chrome-tabs",
+    "category": "community",
+    "installCommand": "/plugin install mcp-chrome-tabs@pokutuna-mcp-chrome-tabs"
   },
   {
     "id": "eyadkelleh-awesome-claude-skills-security/security-fuzzing",
@@ -26232,6 +26232,30 @@
     "installCommand": "/plugin install spring-boot-dev@sivaprasadreddy-sivalabs-marketplace"
   },
   {
+    "id": "adrianpuiu-claude-skills-marketplace/project-planner-skill",
+    "name": "project-planner-skill",
+    "description": "Comprehensive project planning and documentation generator for software projects. Creates structured requirements documents, system design documents, and task breakdown plans with implementation tracking.",
+    "version": "1.0.0",
+    "author": {
+      "name": "George A Puiu",
+      "email": "puiu.adrian@gmail.com"
+    },
+    "source": "./project-planner-skill",
+    "sourcePath": "./project-planner-skill",
+    "marketplace": "adrianpuiu-claude-skills-marketplace",
+    "marketplaceUrl": "https://github.com/adrianpuiu/claude-skills-marketplace",
+    "category": "productivity",
+    "keywords": [
+      "project-planning",
+      "documentation",
+      "requirements",
+      "design",
+      "implementation"
+    ],
+    "strict": false,
+    "installCommand": "/plugin install project-planner-skill@adrianpuiu-claude-skills-marketplace"
+  },
+  {
     "id": "troykelly-claude-skills/issue-driven-development",
     "name": "issue-driven-development",
     "description": "Opinionated GitHub-native development workflow with 51 skills for autonomous, issue-driven software development. Enforces TDD, strict typing, IPv6-first networking, comprehensive code review, local service testing, and continuous issue tracking. Features GitHub-based state management (no local state files), documentation enforcement gates, autonomous orchestration with parallel workers, and PostgreSQL 18/PostGIS/TimescaleDB database skills.",
@@ -26282,30 +26306,6 @@
       "ci-monitoring"
     ],
     "installCommand": "/plugin install issue-driven-development@troykelly-claude-skills"
-  },
-  {
-    "id": "adrianpuiu-claude-skills-marketplace/project-planner-skill",
-    "name": "project-planner-skill",
-    "description": "Comprehensive project planning and documentation generator for software projects. Creates structured requirements documents, system design documents, and task breakdown plans with implementation tracking.",
-    "version": "1.0.0",
-    "author": {
-      "name": "George A Puiu",
-      "email": "puiu.adrian@gmail.com"
-    },
-    "source": "./project-planner-skill",
-    "sourcePath": "./project-planner-skill",
-    "marketplace": "adrianpuiu-claude-skills-marketplace",
-    "marketplaceUrl": "https://github.com/adrianpuiu/claude-skills-marketplace",
-    "category": "productivity",
-    "keywords": [
-      "project-planning",
-      "documentation",
-      "requirements",
-      "design",
-      "implementation"
-    ],
-    "strict": false,
-    "installCommand": "/plugin install project-planner-skill@adrianpuiu-claude-skills-marketplace"
   },
   {
     "id": "ojowwalker77-claude-matrix/matrix",
@@ -26813,17 +26813,6 @@
     "installCommand": "/plugin install ed3d-playwright@ed3dai-ed3d-plugins"
   },
   {
-    "id": "redpanda-data-connect/redpanda-connect",
-    "name": "redpanda-connect",
-    "description": "YAML config and Bloblang authoring for Redpanda Connect",
-    "source": "./.claude-plugin/plugins/redpanda-connect",
-    "sourcePath": "./.claude-plugin/plugins/redpanda-connect",
-    "marketplace": "redpanda-data-connect",
-    "marketplaceUrl": "https://github.com/redpanda-data/connect",
-    "category": "development",
-    "installCommand": "/plugin install redpanda-connect@redpanda-data-connect"
-  },
-  {
     "id": "ttmouse-skills/document-skills",
     "name": "document-skills",
     "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
@@ -26846,6 +26835,29 @@
     "category": "community",
     "strict": false,
     "installCommand": "/plugin install example-skills@ttmouse-skills"
+  },
+  {
+    "id": "redpanda-data-connect/redpanda-connect",
+    "name": "redpanda-connect",
+    "description": "YAML config and Bloblang authoring for Redpanda Connect",
+    "source": "./.claude-plugin/plugins/redpanda-connect",
+    "sourcePath": "./.claude-plugin/plugins/redpanda-connect",
+    "marketplace": "redpanda-data-connect",
+    "marketplaceUrl": "https://github.com/redpanda-data/connect",
+    "category": "development",
+    "installCommand": "/plugin install redpanda-connect@redpanda-data-connect"
+  },
+  {
+    "id": "itsmostafa-aws-agent-skills/aws-agent-skills",
+    "name": "aws-agent-skills",
+    "description": "Collection of AWS engineering skills for IAM, Lambda, DynamoDB, S3, and 14 other core AWS services",
+    "source": "./",
+    "sourcePath": "./",
+    "marketplace": "itsmostafa-aws-agent-skills",
+    "marketplaceUrl": "https://github.com/itsmostafa/aws-agent-skills",
+    "category": "community",
+    "strict": false,
+    "installCommand": "/plugin install aws-agent-skills@itsmostafa-aws-agent-skills"
   },
   {
     "id": "yeachan-heo-oh-my-claude-sisyphus/oh-my-claude-sisyphus",
@@ -26872,29 +26884,6 @@
     "installCommand": "/plugin install oh-my-claude-sisyphus@yeachan-heo-oh-my-claude-sisyphus"
   },
   {
-    "id": "itsmostafa-aws-agent-skills/aws-agent-skills",
-    "name": "aws-agent-skills",
-    "description": "Collection of AWS engineering skills for IAM, Lambda, DynamoDB, S3, and 14 other core AWS services",
-    "source": "./",
-    "sourcePath": "./",
-    "marketplace": "itsmostafa-aws-agent-skills",
-    "marketplaceUrl": "https://github.com/itsmostafa/aws-agent-skills",
-    "category": "community",
-    "strict": false,
-    "installCommand": "/plugin install aws-agent-skills@itsmostafa-aws-agent-skills"
-  },
-  {
-    "id": "jasonkneen-kiro/kiro-spec-driven",
-    "name": "kiro-spec-driven",
-    "description": "Spec-driven development methodology with skills for requirements, design, tasks, AI prompting, QA, and troubleshooting",
-    "source": "./",
-    "sourcePath": "./",
-    "marketplace": "jasonkneen-kiro",
-    "marketplaceUrl": "https://github.com/jasonkneen/kiro",
-    "category": "community",
-    "installCommand": "/plugin install kiro-spec-driven@jasonkneen-kiro"
-  },
-  {
     "id": "numman-ali-n-skills/n-skills",
     "name": "n-skills",
     "description": "Curated collection of high-quality skills for AI coding agents. Includes browser automation, multi-agent orchestration, vision/search tools, and workflow coordination.",
@@ -26907,15 +26896,15 @@
     "installCommand": "/plugin install n-skills@numman-ali-n-skills"
   },
   {
-    "id": "onmax-nuxt-skills/nuxt-skills",
-    "name": "nuxt-skills",
-    "description": "Vue, Nuxt, NuxtHub, and related ecosystem skills",
+    "id": "jasonkneen-kiro/kiro-spec-driven",
+    "name": "kiro-spec-driven",
+    "description": "Spec-driven development methodology with skills for requirements, design, tasks, AI prompting, QA, and troubleshooting",
     "source": "./",
     "sourcePath": "./",
-    "marketplace": "onmax-nuxt-skills",
-    "marketplaceUrl": "https://github.com/onmax/nuxt-skills",
+    "marketplace": "jasonkneen-kiro",
+    "marketplaceUrl": "https://github.com/jasonkneen/kiro",
     "category": "community",
-    "installCommand": "/plugin install nuxt-skills@onmax-nuxt-skills"
+    "installCommand": "/plugin install kiro-spec-driven@jasonkneen-kiro"
   },
   {
     "id": "madappgang-claude-code/code-analysis",
@@ -27162,6 +27151,17 @@
     ],
     "strict": true,
     "installCommand": "/plugin install dev@madappgang-claude-code"
+  },
+  {
+    "id": "onmax-nuxt-skills/nuxt-skills",
+    "name": "nuxt-skills",
+    "description": "Vue, Nuxt, NuxtHub, and related ecosystem skills",
+    "source": "./",
+    "sourcePath": "./",
+    "marketplace": "onmax-nuxt-skills",
+    "marketplaceUrl": "https://github.com/onmax/nuxt-skills",
+    "category": "community",
+    "installCommand": "/plugin install nuxt-skills@onmax-nuxt-skills"
   },
   {
     "id": "lifangda-claude-plugins/accessibility-suite",
