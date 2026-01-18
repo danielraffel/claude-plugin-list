@@ -91,10 +91,10 @@ async function updateMetadata(): Promise<void> {
   const today = lastUpdated.slice(0, 10);
   const { latest, previous } = resolveLatestEntry(history, today);
   const previousEntry = previous >= 0 ? history[previous] : null;
-  const newPlugins = previousEntry ? pluginCount - previousEntry.pluginCount : pluginCount;
+  const newPlugins = previousEntry ? pluginCount - previousEntry.pluginCount : 0;
   const newMarketplaces = previousEntry
     ? marketplaceCount - previousEntry.marketplaceCount
-    : marketplaceCount;
+    : 0;
 
   const entry = {
     date: today,

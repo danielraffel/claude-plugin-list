@@ -1,21 +1,5 @@
 [
   {
-    "date": "2026-01-16",
-    "pluginCount": 3302,
-    "marketplaceCount": 959,
-    "newPlugins": 3302,
-    "newMarketplaces": 959,
-    "updatedAt": "2026-01-16T21:23:03.594Z"
-  },
-  {
-    "date": "2026-01-17",
-    "pluginCount": 1612,
-    "marketplaceCount": 626,
-    "newPlugins": -1690,
-    "newMarketplaces": -333,
-    "updatedAt": "2026-01-17T02:09:33.067Z"
-  },
-  {
     "date": "2026-01-18",
     "pluginCount": 1612,
     "marketplaceCount": 626,

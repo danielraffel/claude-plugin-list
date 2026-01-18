@@ -242,6 +242,14 @@
         return Number(value).toLocaleString();
       }
 
+      function formatSigned(value) {
+        if (value === null || value === undefined) return "-";
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "-";
+        const sign = number > 0 ? "+" : "";
+        return `${sign}${number.toLocaleString()}`;
+      }
+
       function clearChart() {
         while (chartEl.firstChild) {
           chartEl.removeChild(chartEl.firstChild);
@@ -311,8 +319,8 @@
                 <td>${entry.date}</td>
                 <td>${formatNumber(entry.pluginCount)}</td>
                 <td>${formatNumber(entry.marketplaceCount)}</td>
-                <td>${formatNumber(entry.newPlugins)}</td>
-                <td>${formatNumber(entry.newMarketplaces)}</td>
+                <td>${formatSigned(entry.newPlugins)}</td>
+                <td>${formatSigned(entry.newMarketplaces)}</td>
               </tr>
             `;
           })
@@ -342,8 +350,8 @@
           if (latest) {
             pluginCountEl.textContent = formatNumber(latest.pluginCount);
             marketplaceCountEl.textContent = formatNumber(latest.marketplaceCount);
-            newPluginsEl.textContent = formatNumber(latest.newPlugins);
-            newMarketplacesEl.textContent = formatNumber(latest.newMarketplaces);
+            newPluginsEl.textContent = formatSigned(latest.newPlugins);
+            newMarketplacesEl.textContent = formatSigned(latest.newMarketplaces);
           }
           drawChart(entries);
           renderTable(entries);
