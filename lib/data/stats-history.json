@@ -182,5 +182,13 @@
     "newPlugins": -6048,
     "newMarketplaces": -1629,
     "updatedAt": "2026-02-09T10:20:38.410Z"
+  },
+  {
+    "date": "2026-02-10",
+    "pluginCount": 2795,
+    "marketplaceCount": 908,
+    "newPlugins": -306,
+    "newMarketplaces": 1,
+    "updatedAt": "2026-02-10T10:20:30.643Z"
   }
 ]
